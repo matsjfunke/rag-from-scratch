@@ -1,6 +1,7 @@
 """
 matsjfunke
 """
+import ollama
 
 
 def load_and_chunk_file(file_name):
@@ -15,10 +16,20 @@ def load_and_chunk_file(file_name):
     return text_blocks
 
 
+def create_embeddings(embeddings_model, chunks):
+    embeddings = []
+    for chunk in chunks:
+        embeddings.append(ollama.embeddings(model=embeddings_model, prompt=chunk))
+
+    return embeddings
+
+
 def main():
     file_name = "peter-pan.txt"  # input("enter file name: ")
 
     chunks = load_and_chunk_file(file_name)
+    embeddings = create_embeddings('nomic-embed-text', chunks)
+    print(len(embeddings))
 
 
 if __name__ == "__main__":
