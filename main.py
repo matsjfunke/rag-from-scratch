@@ -2,6 +2,8 @@
 matsjfunke
 """
 import ollama
+import json
+import os
 
 
 def load_file(file_name):
@@ -25,6 +27,19 @@ def create_embeddings(embeddings_model, chunks):
     return embeddings
 
 
+def save_embeddings(file_name, embeddings):
+    # make folder
+    folder_name = "embeddings"
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+
+    file_path = os.path.join(folder_name, file_name)
+    if not os.path.exists(file_path):
+        with open(file_path, 'w') as json_file:
+            json.dump(embeddings, json_file)
+        print("Data saved to", file_path)
+
+
 def main():
     file_name = "peter-pan.txt"  # input("enter file name: ")
 
@@ -33,8 +48,8 @@ def main():
     chunks = chunk_text(file_content)
 
     embeddings = create_embeddings('nomic-embed-text', chunks)
+    save_embeddings(file_name, embeddings)
 
-    print(len(embeddings))
 
 
 if __name__ == "__main__":
