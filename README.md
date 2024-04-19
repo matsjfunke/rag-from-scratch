@@ -22,6 +22,7 @@
 
 3. **Euclidean Distance**
     - Measure of the straight-line distance between two points (vector heads in this use case).
+    - Think walking from vector endpoint the other.
     - Formula:
         ```
         d(P,Q) = sqrt((x2 - x1)^2 + (y2 - y1)^2 + ... + (zn - z1)^2)
@@ -30,6 +31,7 @@
 4. **Manhattan Distance**
     - Distance between two points in a grid-based system. 
     - It's named as such because it measures the distance a taxi would have to travel on a grid-like street network.
+    - Think about it like walking along both vectors, changing direction for each dimension.
     - Formula:
         ```
         d = |x2 - x1| + |y2 - y1| + ... + |wn - wn|
