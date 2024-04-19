@@ -101,21 +101,48 @@ def get_similar_chunks(embeddings, prompt_embedding):
 
 
 def main():
-    embeddings_model = 'nomic-embed-text'
+    SYSTEM_PROMPT = """You are a helpful reading assistant who answers questions 
+        based on snippets of text provided in context. Answer only using the context provided, 
+        being as concise as possible. If you're unsure, just say that you don't know.
+        Context:
+    """
+
+    chat_model = "llama2"
+    embeddings_model = "nomic-embed-text"
+
+    # load and chunk file
     file_name = "peter-pan.txt"  # input("enter file name: ")
-
     file_content = load_file(file_name)
-
     chunks = chunk_text(file_content)
 
+    # create and save embeddings
     embeddings = handle_embeddings(embeddings_model, chunks, file_name)
 
-    prompt = "Where does Peter live?"  # input(enter a question: ")
+    # prompt chat and generate prompt_embedding
+    prompt = "Where does Peter take Wendy?"  # input(enter a question: ")
     prompt_embedding = ollama.embeddings(model=embeddings_model, prompt=prompt)
 
-    print(get_similar_chunks(embeddings, prompt_embedding))
+    # find chunks similar to prompt
+    similar_chunks = get_similar_chunks(embeddings, prompt_embedding)[:6]
+    # NOTE: uncomment to print 6 most similar chunks and thier dot products
+    # for chunk in similar_chunks:
+    #     print(f"dotproduct with prompt {chunk[0]} chunk content: {chunks[chunk[1]]}\n")
 
-    # uncomment to test dot_product()
+    # chat with local model based on RAG
+    response = ollama.chat(
+            model=chat_model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": SYSTEM_PROMPT + "\n".join(chunks[chunk[1]] for chunk in similar_chunks),
+                },
+                {"role": "user", "content": prompt},
+            ],
+        )
+    print("\n\n")
+    print(response["message"]["content"])
+
+    # NOTE: uncomment to test dot_product()
     # dotproduct = dot_product(embeddings, 0, 1)
     # print(f"The dot_product of the first 2 embeddings is: {dotproduct}")
     # dotproduct = dot_product(embeddings, 1, 2)
