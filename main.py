@@ -72,6 +72,19 @@ def handle_embeddings(embeddings_model, chunks, file_name):
         return embeddings
 
 
+def dot_product(embeddings, embedding_1, embedding_2):
+    vector_1 = embeddings[embedding_1]
+    vector_2 = embeddings[embedding_2]
+
+    dot_product = 0
+
+    # print("vector dimensions:", len(vector_1["embedding"]))
+    for dimension in range(len(vector_1["embedding"])):
+        dot_product += vector_1["embedding"][dimension] * vector_2["embedding"][dimension]
+
+    return dot_product
+
+
 def main():
     file_name = "peter-pan.txt"  # input("enter file name: ")
 
@@ -80,6 +93,11 @@ def main():
     chunks = chunk_text(file_content)
 
     embeddings = handle_embeddings('nomic-embed-text', chunks, file_name)
+
+    vector_similarity = dot_product(embeddings, 0, 1)
+    print(f"The dot_product of the first 2 embeddings is: {vector_similarity}")
+    vector_similarity = dot_product(embeddings, 1, 2)
+    print(f"The dot_product of the second and 3 embedding is: {vector_similarity}")
 
 
 if __name__ == "__main__":
