@@ -94,10 +94,10 @@ def main():
 
     embeddings = handle_embeddings('nomic-embed-text', chunks, file_name)
 
-    vector_similarity = dot_product(embeddings, 0, 1)
-    print(f"The dot_product of the first 2 embeddings is: {vector_similarity}")
-    vector_similarity = dot_product(embeddings, 1, 2)
-    print(f"The dot_product of the second and 3 embedding is: {vector_similarity}")
+    dotproduct = dot_product(embeddings, 0, 1)
+    print(f"The dot_product of the first 2 embeddings is: {dotproduct}")
+    dotproduct = dot_product(embeddings, 1, 2)
+    print(f"The dot_product of the second and 3 embedding is: {dotproduct}")
 
 
 if __name__ == "__main__":
