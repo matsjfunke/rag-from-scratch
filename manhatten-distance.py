@@ -5,6 +5,7 @@ import ollama
 import json
 import os
 import time
+import numpy as np
 
 
 def load_file(file_name):
@@ -79,12 +80,32 @@ def get_similar_chunks(embeddings, prompt_embedding):
         embedding_vector = embedding_data["embedding"]
         manhatten_distance = 0
         for dimension in range(len(embedding_vector)):
+            # order of subtraction matters, algorithm generates good answers
             manhatten_distance += embedding_vector[dimension] - prompt_embedding["embedding"][dimension]
         similarity_list.append((manhatten_distance, index))
 
     similarity_list.sort(reverse=False)
 
     return similarity_list
+
+
+# NOTE: NumPy function for manhattan_distance calculation
+# - order of subtraction doesn't matter
+# - worse output than other get_similar_chunks() function
+# def get_similar_chunks(embeddings, prompt_embedding):
+#     # Convert chunk embeddings to a NumPy array
+#     chunk_embeddings = np.array([embedding_data["embedding"] for embedding_data in embeddings])
+#
+#     # Calculate Manhattan distances efficiently using vectorized operations
+#     manhattan_distances = np.abs(prompt_embedding["embedding"] - chunk_embeddings).sum(axis=1)
+#
+#     # Combine distances and indices into a single array
+#     similarity_list = np.stack((manhattan_distances, np.arange(len(chunk_embeddings))), axis=1)
+#
+#     # Sort by Manhattan distances (ascending order)
+#     similarity_list = similarity_list[similarity_list[:, 0].argsort()]
+#
+#     return similarity_list.tolist()
 
 
 def main():
@@ -106,14 +127,14 @@ def main():
     embeddings = handle_embeddings(embeddings_model, chunks, file_name)
 
     # prompt chat and generate prompt_embedding
-    prompt = "Where does Peter take Wendy?"  # input(enter a question: ")
+    prompt = input("enter a question: ")  # "Where does Peter take Wendy?"
     prompt_embedding = ollama.embeddings(model=embeddings_model, prompt=prompt)
 
     # find chunks similar to prompt
     similar_chunks = get_similar_chunks(embeddings, prompt_embedding)[:6]
     # NOTE: uncomment to print 6 most similar chunks and thier dot products
-    for chunk in similar_chunks:
-        print(f"This is the Manhatten Distance:{chunk[0]} of chunk: {chunks[chunk[1]]}\n")
+    # for chunk in similar_chunks:
+    #     print(f"This is the Manhatten Distance:{chunk[0]} of chunk: {chunks[chunk[1]]}\n")
 
     # chat with local model based on RAG
     response = ollama.chat(
@@ -121,7 +142,7 @@ def main():
             messages=[
                 {
                     "role": "system",
-                    "content": SYSTEM_PROMPT + "\n".join(chunks[chunk[1]] for chunk in similar_chunks),
+                    "content": SYSTEM_PROMPT + "\n".join(chunks[int(chunk[1])] for chunk in similar_chunks),
                 },
                 {"role": "user", "content": prompt},
             ],
