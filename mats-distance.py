@@ -74,17 +74,19 @@ def handle_embeddings(embeddings_model, chunks, file_name):
 
 
 def get_similar_chunks(embeddings, prompt_embedding):
+    '''
+    Just summing the differences directly without taking absolute values, it doesn't account for the directional changes in each dimension independently.
+    - because positive and negative dimension differences are just summed up
+    '''
     similarity_list = []
 
     for index, embedding_data in enumerate(embeddings):
         embedding_vector = embedding_data["embedding"]
-        manhatten_distance = 0
-
+        mats_formula = 0
         for dimension in range(len(embedding_vector)):
-            # abs() make output positive therefore takes into account direction of dimension
-            manhatten_distance += abs(embedding_vector[dimension] - prompt_embedding["embedding"][dimension])
-
-        similarity_list.append((manhatten_distance, index))
+            # order of subtraction matters, algorithm generates good answers
+            mats_formula += embedding_vector[dimension] - prompt_embedding["embedding"][dimension]
+        similarity_list.append((mats_formula, index))
 
     similarity_list.sort(reverse=False)
 
@@ -117,7 +119,7 @@ def main():
     similar_chunks = get_similar_chunks(embeddings, prompt_embedding)[:6]
     # NOTE: uncomment to print 6 most similar chunks and thier dot products
     for chunk in similar_chunks:
-        print(f"This is the Manhatten Distance:{chunk[0]} of chunk: {chunks[chunk[1]]}\n")
+        print(f"This is the Mats Distance:{chunk[0]} of chunk: {chunks[chunk[1]]}\n")
 
     # chat with local model based on RAG
     response = ollama.chat(

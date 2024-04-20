@@ -1,4 +1,28 @@
+# How to experiment with the scripts
+
+1. **clone repo**
+   ```bash
+   git clone
+   ```
+2. **install dependences**
+   ```bash
+   python3 -m venv env
+   source env/bin/activate
+   pip install -r requirements.txt
+   ```
+3. **run scripts**
+   - will take some time on the first run because embeddings aren’t cached (have a look at the handle_embeddings() function to understand)
+   ```bash
+   python dot-product-rag.py
+   ```
+5. **tinkering optiions**
+   - each script contains a main() function this function gives you inside on tweaks you can make
+   - different data: upload other .txt files in the root dir of the repo and specify thier name in file_name variable of main()
+   - different prompt: change prompt vairable in main()
+
+
 # Algorithms
+Algorithms are implemented in get_similar_chunks() function
 
 1. **Dot product** 
     - The dot product is used to find the angle between two vectors and to project one vector onto another, it provides a way to measure the similarity or alignment between two vectors.
@@ -37,5 +61,10 @@
         d = |x2 - x1| + |y2 - y1| + ... + |wn - wn|
         ```
 
+5. **Mats simple formula**
+    - Formula:
+        ```
+        d = (x2 - x1) + (y2 - y1) + ... + (wn - wn)
+        ```
 
 [great article on vector similarity algorithms](https://medium.com/@serkan_ozal/vector-similarity-search-53ed42b951d9)
