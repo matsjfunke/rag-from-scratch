@@ -5,7 +5,6 @@ import ollama
 import json
 import os
 import time
-import numpy as np
 
 
 def load_file(file_name):
@@ -67,8 +66,9 @@ def create_embeddings(embeddings_model, chunks):
 def handle_embeddings(embeddings_model, chunks, file_name):
     embeddings = load_embeddings_from_json(file_name)
     if embeddings is False:
-        embeddings = create_embeddings(embeddings_model, chunks)
-        return save_embeddings(file_name, embeddings)
+        embeddings_tmp = create_embeddings(embeddings_model, chunks)
+        embeddings = save_embeddings(file_name, embeddings_tmp)
+        return load_embeddings_from_json(file_name)
     else:
         return embeddings
 

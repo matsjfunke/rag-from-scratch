@@ -12,7 +12,6 @@
    ```
 3. **run scripts**
    - will take some time on the first run because embeddings aren’t cached (have a look at the handle_embeddings() function to understand)
-   - you have to run it twice if the embeddings are not saved as json yet
    ```bash
    python dot-product-rag.py
    ```
