@@ -1,7 +1,5 @@
 [More on how I personally think about the algorithms here](ALGORITHMS.md)
 
-# How to experiment with the scripts
-
 1. **clone repo**
    ```bash
    git clone
