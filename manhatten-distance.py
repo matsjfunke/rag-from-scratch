@@ -102,7 +102,7 @@ def main():
     embeddings_model = "nomic-embed-text"
 
     # load and chunk file
-    file_name = "peter-pan.txt"  # input("enter file name: ")
+    file_name = "moby-dick.txt"  # input("enter file name: ")
     file_content = load_file(file_name)
     chunks = chunk_text(file_content)
 
@@ -110,7 +110,7 @@ def main():
     embeddings = handle_embeddings(embeddings_model, chunks, file_name)
 
     # prompt chat and generate prompt_embedding
-    prompt = "Where does Peter take Wendy?"  # input("enter a question: ")
+    prompt = "What is Captain Ahab mission?"  # input("enter a question: ")
     prompt_embedding = ollama.embeddings(model=embeddings_model, prompt=prompt)
 
     # find chunks similar to prompt
