@@ -1,8 +1,9 @@
 [More on how I personally think about the algorithms here](ALGORITHMS.md)
 
+# How to run scripts, and experiment
 1. **clone repo**
    ```bash
-   git clone
+   git clone https://github.com/matsjfunke/rag-from-scratch.git
    ```
 2. **install dependences**
    ```bash
